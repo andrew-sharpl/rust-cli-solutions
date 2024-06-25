@@ -1,33 +1,40 @@
-use clap::{App, Arg};
+use clap::{Arg, ArgAction, Command};
 
 fn main() {
-    // Defining CLI flags and arguments
-    let matches = App::new("echor")
+    let matches = Command::new("echor")
         .version("0.1.0")
         .author("J. Andrew Sharp Luevano")
-        .about("A recreation of the echo command, written in Rust.")
+        .version("0.1.0")
         .arg(
-            Arg::with_name("text")
-                .value_name("TEXT")
+            Arg::new("text")
+                .action(ArgAction::Append) // Allows multiple vals
                 .help("Input text")
-                .required(true)
-                .min_values(1),
+                .required(true),
         )
         .arg(
-            Arg::with_name("omit_newline")
-                .short("n")
+            Arg::new("omit_newline")
+                .short('n')
                 .help("Do not print newline")
-                .takes_value(false),
+                .action(ArgAction::SetTrue), // Makes it a flag
+        )
+        .help_template(
+            // Template required to show author
+            "\
+{before-help}{name} {version}
+{author-with-newline}{about-with-newline}
+{usage-heading} {usage}
+
+{all-args}{after-help}
+",
         )
         .get_matches();
 
-    // Lossy returns Option<Vec<String>>
-    // We can assume unwrap succeeds since get_matches
-    // did not fail.
-    let text = matches.values_of_lossy("text").unwrap();
-    let omit_newline = matches.is_present("omit_newline");
-
-    // Note that if ... else ... is an expression that returns 
-    // a value.
+    // Get arguments and convert to a Vec of strings
+    let text = matches
+        .get_many::<String>("text")
+        .unwrap_or_default()
+        .map(|v| v.as_str())
+        .collect::<Vec<_>>();
+    let omit_newline = matches.get_flag("omit_newline");
     print!("{}{}", text.join(" "), if omit_newline { "" } else { "\n" });
 }

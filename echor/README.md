@@ -1,14 +1,12 @@
 echor 0.1.0
-Andrew Sharp Luevano
-Rust echo
+J. Andrew Sharp Luevano
 
-USAGE:
-    echor [FLAGS] <TEXT>...
+Usage: echor [OPTIONS] <text>...
 
-FLAGS:
-    -h, --help       Prints help information
-    -n               Do not print newline
-    -V, --version    Prints version information
+Arguments:
+  <text>...  Input text
 
-ARGS:
-    <TEXT>...    Input text
+Options:
+  -n             Do not print newline
+  -h, --help     Print help
+  -V, --version  Print version
