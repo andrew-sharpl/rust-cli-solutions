@@ -17,6 +17,13 @@ fn main() {
                 .help("Do not print newline")
                 .action(ArgAction::SetTrue), // Makes it a flag
         )
+        .arg(
+            Arg::new("join")
+                .short('j')
+                .long("join")
+                .help("Joins text using given string")
+                .required(false),
+        )
         .help_template(
             // Template required to show author
             "\
@@ -36,5 +43,13 @@ fn main() {
         .map(|v| v.as_str())
         .collect::<Vec<_>>();
     let omit_newline = matches.get_flag("omit_newline");
-    print!("{}{}", text.join(" "), if omit_newline { "" } else { "\n" });
+    let join = match matches.get_one::<String>("join") {
+        Some(value) => value,
+        None => " ",
+    };
+    print!(
+        "{}{}",
+        text.join(join),
+        if omit_newline { "" } else { "\n" }
+    );
 }

@@ -49,3 +49,13 @@ fn hello1_no_newline() -> TestResult {
 fn hello2_no_newline() -> TestResult {
     run(&["-n", "Hello", "there"], "tests/expected/hello2.n.txt")
 }
+
+#[test]
+fn join1_no_spaces() -> TestResult {
+    run(&["Hello", "there", "-j", ""], "tests/expected/join1.txt")
+}
+
+#[test]
+fn join1_no_spaces_no_newline() -> TestResult {
+    run(&["-j", "", "Hello", "there", "-n"], "tests/expected/join1.n.txt")
+}
