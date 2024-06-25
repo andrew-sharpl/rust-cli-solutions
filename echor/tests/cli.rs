@@ -49,4 +49,3 @@ fn hello1_no_newline() -> TestResult {
 fn hello2_no_newline() -> TestResult {
     run(&["-n", "Hello", "there"], "tests/expected/hello2.n.txt")
 }
-
