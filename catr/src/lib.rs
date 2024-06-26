@@ -1,6 +1,7 @@
 use clap::{Arg, ArgAction, Command};
 use std::error::Error;
-
+use std::fs::File;
+use std::io::{self, BufRead, BufReader};
 
 #[allow(dead_code)]
 #[derive(Debug)]
@@ -52,7 +53,42 @@ pub fn get_args() -> Result<Config, Box<dyn Error>> {
     })
 }
 
+fn open(filename: &str) -> Result<Box<dyn BufRead>, Box<dyn Error>> {
+    match filename {
+        "-" => Ok(Box::new(BufReader::new(io::stdin()))),
+        _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
+    }
+}
+
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
-    dbg!(config);
+    for filename in config.files {
+        match open(&filename) {
+            Err(err) => eprintln!("Failed to open {}: {}", filename, err),
+            Ok(buffer) => {
+                if !(config.number_lines || config.number_nonblank_lines) {
+                    // Print without any numbering
+                    for line in buffer.lines() {
+                        let line = line?; // Handle errors
+                        println!("{}", line);
+                    }
+                } else {
+                    // Numbered lines
+                    let mut line_num = 1;
+                    for line in buffer.lines() {
+                        let line = line?;
+                        // Check if line is blank
+                        if line.is_empty() && config.number_nonblank_lines {
+                            // Skip empty line
+                            println!();
+                        } else {
+                            // Print with line number
+                            println!("{:>6}\t{}", line_num, line);
+                            line_num = line_num + 1;
+                        }
+                    }
+                }
+            },
+        }
+    }
     Ok(())
 }
