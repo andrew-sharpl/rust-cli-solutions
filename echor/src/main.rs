@@ -4,11 +4,11 @@ fn main() {
     let matches = Command::new("echor")
         .version("0.1.0")
         .author("J. Andrew Sharp Luevano")
-        .version("0.1.0")
         .arg(
             Arg::new("text")
                 .action(ArgAction::Append) // Allows multiple vals
                 .help("Input text")
+                .value_name("TEXT")
                 .required(true),
         )
         .arg(
@@ -21,6 +21,7 @@ fn main() {
             Arg::new("join")
                 .short('j')
                 .long("join")
+                .value_name("STR")
                 .help("Joins text using given string")
                 .required(false),
         )
