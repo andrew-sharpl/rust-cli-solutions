@@ -11,6 +11,13 @@ pub struct Args {
     bytes: Option<u64>,
 }
 
+fn open(filename: &str) -> Result<Box<dyn BufRead>, Box<dyn Error>> {
+    match filename {
+        "-" => Ok(Box::new(BufReader::new(io::stdin()))),
+        _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
+    }
+}
+
 
 pub fn get_args() -> Result<Args, Box<dyn Error>> {
     let matches = Command::new("headr")
@@ -57,8 +64,11 @@ pub fn get_args() -> Result<Args, Box<dyn Error>> {
     )
 }
 
-
 pub fn run(args: Args) -> Result<(), Box<dyn Error>> {
-    println!("{:#?}", args);
+    for filename in args.files {
+        match open(&filename) {
+             
+        }
+    }
     Ok(())
 }
